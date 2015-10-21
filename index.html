@@ -1,0 +1,412 @@
+<html>
+<head>
+<title>hsf &middot; squadron pricing calculator</title>
+<style type="text/css">
+td {font-family: Arial; size: large; color: #96FFFF;}
+a:link, a:visited {color: #90FF96; text-decoration: none;}
+.mount {position: relative;}
+.screen {position: absolute; top: 0px; left: 0px; border: 1px solid rgba(28, 79, 82, 0.75);}
+</style>
+<script src="sku.js"></script> 
+<script type="text/javascript">
+<!--
+var cachedBuild = [];
+var filteredItems = [];
+
+function initialize() {
+	layer0 = document.getElementById("layer0");
+	layer0.style.zIndex = 0;
+	layer1 = document.getElementById("layer1");
+	layer1.style.zIndex = 1;
+	ctx = [layer0.getContext("2d"), layer1.getContext("2d")];
+	ctx[0].fillStyle = "rgba(28, 79, 82, 0.8)";
+	ctx[0].fillRect(0, 0, 800, 600);
+};
+
+function reset (z) {
+	ctx[z].setTransform(1, 0, 0, 1, 0, 0);
+	ctx[z].clearRect(0, 0, 800, 600);
+};
+
+function cnvTxt (textArray) {
+	if (textArray != undefined) {
+		var cDefault = "rgba(152, 255, 255, 0.9)";
+		textArray[1] = (textArray[1] == undefined) ? cDefault : textArray[1];
+		textArray[0][1] = (textArray[0][1] == undefined) ? "" : textArray[0][1];
+		if (textArray[0][0] != undefined) {
+			displayBuffer.push(textArray);
+		};
+	};
+	reset(1);
+	ctx[1].font = "bold 12px Arial";
+	for (var i = 0; i < displayBuffer.length; i++) {
+		ctx[1].fillStyle = displayBuffer[i][1];
+		ctx[1].fillText(displayBuffer[i][0][0], 10, 20 + 15 * i);
+		ctx[1].fillText(displayBuffer[i][0][1], 275, 20 + 15 * i);
+	};
+};
+
+function canonicalize (name) {
+	return name.toLowerCase().replace(/\W/g, '');
+};
+
+function importXWS () {
+	document.getElementById("rowImport").hidden = true;
+	var xws = JSON.parse(document.getElementById("fieldImport").value);
+	var faction = xws.faction;
+	var rawbuild = [];
+	for (entry in xws.pilots) {
+		var pilot = xws.pilots[entry];
+		var pilotIndex = rawbuild.indexOf("pilot&" + pilot.name);
+		if (pilotIndex == -1) {
+			rawbuild.push("pilot&" + pilot.name);
+			rawbuild.push(1);
+		} else {
+			rawbuild[pilotIndex + 1]++;
+		};
+// builder XWS implementation error, temporary workaround
+		if (pilot.ship == "yt2400freighter") {
+			pilot.ship = "yt2400";
+		};
+// workaround
+		var shipIndex = rawbuild.indexOf("ship&" + pilot.ship);
+		if (shipIndex == -1) {
+			rawbuild.push("ship&" + pilot.ship);
+			rawbuild.push(1);
+		} else {
+			rawbuild[shipIndex + 1]++;
+		};
+		if (pilot.upgrades != undefined) {
+			for (rawtype in pilot.upgrades) {
+				var subcategory = pilot.upgrades[rawtype];
+				switch (rawtype) {
+					case "amd":
+						subtype = "astromech";
+						break;
+					case "ept":
+						subtype = "elite";
+						break;
+					case "mod":
+						subtype = "modification";
+						break;
+					case "samd":
+						subtype = "salvaged";
+						break;
+					default:
+						subtype = rawtype;
+						break;
+				};
+				for (var i = 0; i < subcategory.length; i++) {
+					var upgradeIndex = rawbuild.indexOf(subtype + "&" + subcategory[i]);
+					if (upgradeIndex == -1) {
+						rawbuild.push(subtype + "&" + subcategory[i]);
+						rawbuild.push(1);
+					} else {
+						rawbuild[upgradeIndex + 1]++;
+					};
+				};
+			};
+		};
+	};
+	var build = [];
+	for (var i = 0; i < rawbuild.length / 2; i++) {
+		var card = rawbuild[2 * i];
+		var cardQTY = rawbuild[2 * i + 1];
+		var cardType = card.substring(0, card.indexOf("&"));
+		var cardName = card.substr(card.indexOf("&") + 1);
+		switch (cardType) {
+			case "pilot":
+				build.push({name: cardName, variant: faction, type: cardType, qty: cardQTY});
+				break;
+			default:
+				build.push({name: cardName, type: cardType, qty: cardQTY});
+				break;
+		};
+	};
+	cachedBuild = build.slice(0);
+	filteredItems = [];
+	buyList(build);
+};
+
+function buyList (build) {
+	var winningBids = [];
+	displayBuffer = [];
+	cnvTxt([["List:", "Contained In:"], "rgba(250, 255, 190, 0.9)"]);
+	build = sourceParts(build);
+	var output = monopolize(build);
+	var remainder = [];
+	for (var i = 0; i < output.remainder.length; i++) {
+		remainder.push(output.remainder[i].name);
+		remainder.push(output.remainder[i].qty);
+	};
+	var monopolyCost = 0;
+	for (var i = 0; i < output.monopolies.length / 2; i++) {
+		monopolyCost += costTier[lookupSWX(output.monopolies[2 * i], "cost")] * output.monopolies[2 * i + 1];
+	};
+	finalBids = [];
+	if (output.remainder.length > 0) {
+		getBids(output.remainder);
+	};
+	finalBids.sort(function(a, b){return a.cost - b.cost});
+	for (var i = 0; i < finalBids.length; i++) {
+		if (finalBids[i].cost == finalBids[0].cost) {
+			winningBids.push(finalBids[i]);
+		};
+	};
+	var oneWinner = (winningBids.length < 2) ? true : false;
+	var totalCost = monopolyCost + ((winningBids.length > 0) ? winningBids[0].cost : 0);
+	cnvTxt([[""]]);
+	if (!oneWinner) {	
+		cnvTxt([["There are " + Math.max(1, winningBids.length) + " cheapest ways to buy your list, costing a total of $" + totalCost.toFixed(2) + ":"], "rgba(250, 255, 190, 0.9)"]);
+		if (output.monopolies.length > 0) {
+			cnvTxt([["Required:"], "rgba(250, 255, 190, 0.9)"]);
+		};
+	} else {
+		if (build.length == 0) {
+			cnvTxt([["These aren't the ships you're looking for."], "rgba(250, 255, 190, 0.9)"]);
+		} else {
+			cnvTxt([["The cheapest way to buy your list, costing a total of $" + totalCost.toFixed(2) + ":"], "rgba(250, 255, 190, 0.9)"]);
+		};
+	};
+	for (var i = 0; i < output.monopolies.length / 2; i++) {
+		var swx = output.monopolies[2 * i];
+		var qty = output.monopolies[2 * i + 1];
+		var cost = "$" + (qty * costTier[lookupSWX(swx, "cost")]).toFixed(2);
+		var outputString = "  " + qty + "x " + lookupSWX(swx, "name");
+		cnvTxt([[outputString, cost]]);
+	};
+	for (var i = 0; i < winningBids.length; i++) {
+		if (!oneWinner) {
+			if (i == 0) {
+				cnvTxt([[""]]);
+			};
+			cnvTxt([["Option " + (i + 1) + ":"], "rgba(250, 255, 190, 0.9)"]);
+		};
+		for (var j = 0; j < winningBids[i].contents.length; j++) {
+			var set = winningBids[i].contents[j].split("*");
+			var swx = set[0];
+			var qty = set[1];
+			var cost = "$" + (qty * costTier[lookupSWX(swx, "cost")]).toFixed(2);
+			var outputString = "  " + qty + "x " + lookupSWX(swx, "name");
+			cnvTxt([[outputString, cost]]);
+		};
+	};
+};
+
+function lookupSWX(index, field) {
+	var product = swx[index.substr(3)];
+	if (field == "cost") {
+		return product.cost;
+	} else {
+		var name = "";
+		for (key in product) {
+			if (key != "cost") {
+				name = key;
+			};
+		};
+		if (field == "name") {
+			return name;
+		} else if (field == "contents") {
+			return product[name];
+		};
+	};
+};
+
+function sourceParts (build) {
+	for (var i = 0; i < build.length; i++) {
+		build[i].sources = [];
+		for (var j = 1; j < swx.length; j++) {
+			for (key in swx[j]) {
+				if (key != "cost") {
+					for (var k = 0; k < swx[j][key].length; k++) {
+						if (canonicalize(swx[j][key][k].name) == canonicalize(build[i].name) && swx[j][key][k].type == build[i].type && (swx[j][key][k].variant == undefined || (swx[j][key][k].variant == build[i].variant))) {
+							build[i].name = swx[j][key][k].name;
+							build[i].sources[build[i].sources.length] = ["SWX" + j, swx[j][key][k].qty];
+							if (swx[j][key][k].variant == undefined) {
+								delete build[i].variant;
+							};
+						};
+					};
+				};
+			};
+		};
+		var sourcelist = [];
+		for (var z = 0; z < build[i].sources.length; z++) {
+			sourcelist.push(lookupSWX(build[i].sources[z][0], "name") + " (" + build[i].sources[z][1] + ")");
+		};
+		var variant = (build[i].variant == undefined) ? "" : (build[i].variant + " ");
+		cnvTxt([[build[i].qty + "x " + build[i].name + " (" + variant + build[i].type + ")", sourcelist.join(", ").replace(/ Expansion Pack/g, "")]]);
+	};
+	for (var i = 0; i < filteredItems.length; i++) {
+		var sourcelist = [];
+		for (var z = 0; z < filteredItems[i].sources.length; z++) {
+			sourcelist.push(lookupSWX(filteredItems[i].sources[z][0], "name") + " (" + filteredItems[i].sources[z][1] + ")");
+		};
+		var variant = (filteredItems[i].variant == undefined) ? "" : (filteredItems[i].variant + " ");
+		cnvTxt([[filteredItems[i].qty + "x " + filteredItems[i].name + " (" + variant + filteredItems[i].type + ")", sourcelist.join(", ").replace(/ Expansion Pack/g, "")], "rgba(152, 255, 255, 0.5)"]);
+	};
+	return build;
+};
+
+function monopolize (build) {
+	var monopolies = [];
+	var biddable = [];
+	for (var i = 0; i < build.length; i++) {
+		if (build[i].sources.length == 1) {
+			var qty = Math.ceil(build[i].qty / build[i].sources[0][1]);
+			var index = monopolies.indexOf(build[i].sources[0][0]);
+			if (index == -1) {
+				monopolies.push(build[i].sources[0][0]);
+				monopolies.push(qty);
+			} else {
+				if (monopolies[index + 1] < qty) {
+					monopolies[index + 1] = qty;
+				};
+			};
+		} else {
+			biddable.push(build[i]);
+		};
+	};
+	biddable = fillFromStock(monopolies, biddable);
+	var output = {"monopolies": monopolies, "remainder": biddable};
+	return output;
+};
+
+function fillFromStock(sets, picksheet, isBid) {
+	if (sets.length > 0 && picksheet.length > 0) {
+		for (var i = 0; i < picksheet.length; i++) {
+			var qty = picksheet[i].qty;
+			for (var j = 0; j < picksheet[i].sources.length; j++) {
+				var index = sets.indexOf(picksheet[i].sources[j][0]);
+				if (index != -1) {
+					if (isBid) {
+						qty -= sets[index + 1] * picksheet[i].sources[j][1];
+					} else {
+						if (picksheet[i].oqty == undefined) {
+							picksheet[i].oqty = picksheet[i].qty;
+						};
+						picksheet[i].qty -= sets[index + 1] * picksheet[i].sources[j][1];
+						qty = picksheet[i].qty;
+					};
+				};
+			};
+			if (qty <= 0) {
+				picksheet.splice(i, 1);
+				if (i != picksheet.length) {
+					i--;
+				};
+			};
+		};
+	};
+	return picksheet;
+};
+
+function getBids (build, sets) {
+	if (sets == undefined) {
+		sets = [];
+	};
+	var sources = build[0].sources;
+	var bids = [];
+	for (var i = 0; i < sources.length; i++) {
+		var bidBuild = build.slice(0);
+		bids[i] = sets.slice(0);
+		var setIndex = sources[i][0];
+		var setQTY = sources[i][1];
+		var listIndex = bids[i].indexOf(setIndex);
+		if (listIndex == -1) {
+			bids[i].push(setIndex);
+			bids[i].push(1);
+		} else {
+			bids[i][listIndex + 1]++;
+		};
+		bidBuild = fillFromStock(bids[i], bidBuild, true);
+		if (bidBuild.length > 0) {
+			bids[i] = getBids(bidBuild, bids[i]);
+		} else {
+			var contents = [];
+			var totalCost = 0;
+			for (var j = 0; j < bids[i].length / 2; j++) {
+				var setName = bids[i][j * 2];
+				var unitsBought = bids[i][j * 2 + 1];
+				totalCost += costTier[lookupSWX(setName, "cost")] * unitsBought;
+				contents.push(setName + "*" + unitsBought);
+			};
+			contents.sort();
+			bids[i] = {"cost": totalCost, "contents": contents.slice(0)};
+			if (newBid(contents)) {
+				finalBids.push(bids[i]);
+			};
+		};
+	};
+};
+
+function newBid (bid) {
+	var bidArray = [];
+	var bidString = bid.join("&");
+	for (var i = 0; i < finalBids.length; i++) {
+		bidArray.push(finalBids[i].contents.join("&"));
+	};
+	if (bidArray.indexOf(bidString) == -1) {
+		return true;
+	} else {
+		return false;
+	};
+};
+
+function listSelect (event) {
+	event.preventDefault();
+	var container = layer0.getBoundingClientRect();
+	var y = event.clientY + window.pageYOffset - container.top;
+	var index = Math.ceil((y - 23) / 15) - 1;
+	if (index >= 0) {
+		for (var i = 0; i < cachedBuild.length; i++) {
+			if (cachedBuild[i].oqty != undefined) {
+				cachedBuild[i].qty = cachedBuild[i].oqty;
+			};
+		};
+		if (index < cachedBuild.length) {
+			filteredItems.push(cachedBuild[index]);
+			cachedBuild.splice(index, 1);
+		} else if (index < cachedBuild.length + filteredItems.length) {
+			index -= cachedBuild.length;
+			cachedBuild.push(filteredItems[index]);
+			filteredItems.splice(index, 1);
+		};
+		buyList(cachedBuild);
+	};
+};
+
+-->
+</script>
+</head>
+<body bgcolor="black" onload = "initialize();">
+<table>
+<tr>
+<td colspan=4>
+<button id="buttonImport" onClick='document.getElementById("rowImport").hidden = ((document.getElementById("rowImport").hidden) ? false : true);'>»</button>
+<img src="hsf.png" style="position: relative; top: 2px; left: 2px;"></td>
+</tr>
+<tr id="rowImport">
+<td align="right">
+<textarea id="fieldImport" style="height: 100px; width: 400px;"></textarea><br>
+paste xws above and <button onClick="importXWS();">Import</button>
+</td>
+<td width="15"></td>
+<td>
+need xws? export a list from one of these builders:<br>
+<br>
+<a href="http://geordanr.github.io/xwing/" target="_blank">(Yet Another) X-Wing Miniatures Squad Builder</a><br>
+<a href="http://xwing-builder.co.uk/build" target="_blank">Voidstate's Squadron Builder</a><br>
+<a href="http://x-wing.fabpsb.net/gindex.php" target="_blank">Fab's Squadrons Generator</a>
+</td>
+</tr>
+<tr>
+<td class="mount" width="400" height="600">
+<canvas class="screen" id="layer0" width="800" height="600"></canvas>
+<canvas class="screen" id="layer1" width="800" height="600" onClick="listSelect(event);"></canvas>
+</td>
+</tr>
+</table>
+<a id="debug"></a>
+</body>
+</html>
