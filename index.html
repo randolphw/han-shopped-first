@@ -97,6 +97,11 @@ function importXWS () {
 						break;
 				};
 				for (var i = 0; i < subcategory.length; i++) {
+// builder XWS implementation error, temporary workaround
+					if (subcategory[i] == "advtargetingcomputer") {
+						subcategory[i] = "advancedtargetingcomputer";
+					};
+// workaround
 					var upgradeIndex = rawbuild.indexOf(subtype + "&" + subcategory[i]);
 					if (upgradeIndex == -1) {
 						rawbuild.push(subtype + "&" + subcategory[i]);
