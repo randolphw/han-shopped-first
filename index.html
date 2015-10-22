@@ -337,7 +337,7 @@ function getBids (build, sets) {
 				contents.push(setName + "*" + unitsBought);
 			};
 			contents.sort();
-			bids[i] = {"cost": totalCost, "contents": contents.slice(0)};
+			bids[i] = {"cost": Math.round((totalCost + 0.00001) * 100) / 100, "contents": contents.slice(0)};
 			if (newBid(contents)) {
 				finalBids.push(bids[i]);
 			};
