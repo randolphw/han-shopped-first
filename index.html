@@ -385,8 +385,9 @@ function listSelect (event) {
 	};
 };
 
-function useCurrency(curr) {
-	currency = curr;
+function useCurrency(index) {
+	var currencies = ["usd", "gbp"];
+	currency = currencies[index];
 	if (cachedBuild.length + filteredItems.length > 0) {
 		for (var i = 0; i < cachedBuild.length; i++) {
 			if (cachedBuild[i].oqty != undefined) {
@@ -415,9 +416,9 @@ function useCurrency(curr) {
 <table border=0 cellpadding=0 cellspacing=0 width="400">
 <tr>
 <td>
-<select>
-<option value="usd" onClick='useCurrency("usd");'>$</option>
-<option value="gbp" onClick='useCurrency("gbp");'>&pound;</option>
+<select onChange='useCurrency(this.selectedIndex);'>
+<option value="usd">US ($)</option>
+<option value="gbp">UK (&pound;)</option>
 </select>
 </td>
 <td align="right">paste xws above and <button onClick="importXWS();">Import</button></td>
