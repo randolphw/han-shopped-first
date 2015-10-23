@@ -12,6 +12,8 @@ a:link, a:visited {color: #90FF96; text-decoration: none;}
 <!--
 var cachedBuild = [];
 var filteredItems = [];
+var currency = "usd";
+var symbol = {usd: "$", gbp: String.fromCharCode(163)}
 
 function initialize() {
 	layer0 = document.getElementById("layer0");
@@ -146,7 +148,7 @@ function buyList (build) {
 	};
 	var monopolyCost = 0;
 	for (var i = 0; i < output.monopolies.length / 2; i++) {
-		monopolyCost += costTier[lookupSWX(output.monopolies[2 * i], "cost")] * output.monopolies[2 * i + 1];
+		monopolyCost += costTier[currency][lookupSWX(output.monopolies[2 * i], "cost")] * output.monopolies[2 * i + 1];
 	};
 	finalBids = [];
 	if (output.remainder.length > 0) {
@@ -159,10 +161,10 @@ function buyList (build) {
 		};
 	};
 	var oneWinner = (winningBids.length < 2) ? true : false;
-	var totalCost = monopolyCost + ((winningBids.length > 0) ? winningBids[0].cost : 0);
+	var totalCost = (monopolyCost + ((winningBids.length > 0) ? winningBids[0].cost : 0)) / 100;
 	cnvTxt([[""]]);
 	if (!oneWinner) {	
-		cnvTxt([["There are " + Math.max(1, winningBids.length) + " cheapest ways to buy your list, costing a total of $" + totalCost.toFixed(2) + ":"], "rgba(250, 255, 190, 0.9)"]);
+		cnvTxt([["There are " + Math.max(1, winningBids.length) + " cheapest ways to buy your list, costing a total of " + symbol[currency] + totalCost.toFixed(2) + ":"], "rgba(250, 255, 190, 0.9)"]);
 		if (output.monopolies.length > 0) {
 			cnvTxt([["Required:"], "rgba(250, 255, 190, 0.9)"]);
 		};
@@ -170,19 +172,19 @@ function buyList (build) {
 		if (build.length == 0) {
 			cnvTxt([["These aren't the ships you're looking for."], "rgba(250, 255, 190, 0.9)"]);
 		} else {
-			cnvTxt([["The cheapest way to buy your list, costing a total of $" + totalCost.toFixed(2) + ":"], "rgba(250, 255, 190, 0.9)"]);
+			cnvTxt([["The cheapest way to buy your list, costing a total of " + symbol[currency] + totalCost.toFixed(2) + ":"], "rgba(250, 255, 190, 0.9)"]);
 		};
 	};
 	for (var i = 0; i < output.monopolies.length / 2; i++) {
 		var swx = output.monopolies[2 * i];
 		var qty = output.monopolies[2 * i + 1];
-		var cost = "$" + (qty * costTier[lookupSWX(swx, "cost")]).toFixed(2);
+		var cost = symbol[currency] + ((qty * costTier[currency][lookupSWX(swx, "cost")]) / 100).toFixed(2);
 		var outputString = "  " + qty + "x " + lookupSWX(swx, "name");
 		cnvTxt([[outputString, cost]]);
 	};
 	for (var i = 0; i < winningBids.length; i++) {
 		if (!oneWinner) {
-			if (i == 0) {
+			if (i == 0 && output.monopolies.length > 0) {
 				cnvTxt([[""]]);
 			};
 			cnvTxt([["Option " + (i + 1) + ":"], "rgba(250, 255, 190, 0.9)"]);
@@ -191,7 +193,7 @@ function buyList (build) {
 			var set = winningBids[i].contents[j].split("*");
 			var swx = set[0];
 			var qty = set[1];
-			var cost = "$" + (qty * costTier[lookupSWX(swx, "cost")]).toFixed(2);
+			var cost = symbol[currency] + ((qty * costTier[currency][lookupSWX(swx, "cost")]) / 100).toFixed(2);
 			var outputString = "  " + qty + "x " + lookupSWX(swx, "name");
 			cnvTxt([[outputString, cost]]);
 		};
@@ -333,11 +335,11 @@ function getBids (build, sets) {
 			for (var j = 0; j < bids[i].length / 2; j++) {
 				var setName = bids[i][j * 2];
 				var unitsBought = bids[i][j * 2 + 1];
-				totalCost += costTier[lookupSWX(setName, "cost")] * unitsBought;
+				totalCost += costTier[currency][lookupSWX(setName, "cost")] * unitsBought;
 				contents.push(setName + "*" + unitsBought);
 			};
 			contents.sort();
-			bids[i] = {"cost": Math.round((totalCost + 0.00001) * 100) / 100, "contents": contents.slice(0)};
+			bids[i] = {"cost": totalCost, "contents": contents.slice(0)};
 			if (newBid(contents)) {
 				finalBids.push(bids[i]);
 			};
@@ -360,24 +362,40 @@ function newBid (bid) {
 
 function listSelect (event) {
 	event.preventDefault();
-	var container = layer0.getBoundingClientRect();
-	var y = event.clientY + window.pageYOffset - container.top;
-	var index = Math.ceil((y - 23) / 15) - 1;
-	if (index >= 0) {
+	if (cachedBuild.length + filteredItems.length > 0) {
+		var container = layer0.getBoundingClientRect();
+		var y = event.clientY + window.pageYOffset - container.top;
+		var index = Math.ceil((y - 23) / 15) - 1;
+		if (index >= 0) {
+			for (var i = 0; i < cachedBuild.length; i++) {
+				if (cachedBuild[i].oqty != undefined) {
+					cachedBuild[i].qty = cachedBuild[i].oqty;
+				};
+			};
+			if (index < cachedBuild.length) {
+				filteredItems.push(cachedBuild[index]);
+				cachedBuild.splice(index, 1);
+			} else if (index < cachedBuild.length + filteredItems.length) {
+				index -= cachedBuild.length;
+				cachedBuild.push(filteredItems[index]);
+				filteredItems.splice(index, 1);
+			};
+			buyList(cachedBuild);
+		};
+	};
+};
+
+function useCurrency(curr) {
+	currency = curr;
+	if (cachedBuild.length + filteredItems.length > 0) {
 		for (var i = 0; i < cachedBuild.length; i++) {
 			if (cachedBuild[i].oqty != undefined) {
 				cachedBuild[i].qty = cachedBuild[i].oqty;
 			};
 		};
-		if (index < cachedBuild.length) {
-			filteredItems.push(cachedBuild[index]);
-			cachedBuild.splice(index, 1);
-		} else if (index < cachedBuild.length + filteredItems.length) {
-			index -= cachedBuild.length;
-			cachedBuild.push(filteredItems[index]);
-			filteredItems.splice(index, 1);
-		};
 		buyList(cachedBuild);
+	} else if (document.getElementById("fieldImport").value != "") {
+		importXWS();
 	};
 };
 
@@ -394,15 +412,25 @@ function listSelect (event) {
 <tr id="rowImport">
 <td align="right">
 <textarea id="fieldImport" style="height: 100px; width: 400px;"></textarea><br>
-paste xws above and <button onClick="importXWS();">Import</button>
+<table border=0 cellpadding=0 cellspacing=0 width="400">
+<tr>
+<td>
+<select>
+<option value="usd" onClick='useCurrency("usd");'>$</option>
+<option value="gbp" onClick='useCurrency("gbp");'>&pound;</option>
+</select>
+</td>
+<td align="right">paste xws above and <button onClick="importXWS();">Import</button></td>
+</tr>
+</table>
 </td>
 <td width="15"></td>
-<td>
-need xws? export a list from one of these builders:<br>
-<br>
+<td valign="top">
+need xws? export a list from one of these builders:<br><br>
 <a href="http://geordanr.github.io/xwing/" target="_blank">(Yet Another) X-Wing Miniatures Squad Builder</a><br>
 <a href="http://xwing-builder.co.uk/build" target="_blank">Voidstate's Squadron Builder</a><br>
-<a href="http://x-wing.fabpsb.net/gindex.php" target="_blank">Fab's Squadrons Generator</a>
+<a href="http://x-wing.fabpsb.net/gindex.php" target="_blank">Fab's Squadrons Generator</a><br>
+<br>
 </td>
 </tr>
 <tr>

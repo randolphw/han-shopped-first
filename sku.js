@@ -1,16 +1,31 @@
-costTier = [
-	7.95,	// dice, bases
-	14.95,	// small-based ship
-	19.95,	// small-based ship+
-	29.95,	// large-based ship
-	39.95,	// large-based ship+
-	49.95,	// Ghost
-	59.95,	// Rebel Transport
-	69.95,	// Imperial Assault Carrier
-	79.95,	// -
-	89.95,	// Tantive IV
-	99.95,	// Imperial Raider
-];
+costTier = {
+	usd: [
+		795,	// dice
+		1495,	// small-based ship
+		1995,	// small-based ship+
+		2995,	// large-based ship
+		3995,	// large-based ship+
+		4995,	// Ghost
+		5995,	// Rebel Transport
+		6995,	// Imperial Assault Carrier
+		7995,	// -
+		8995,	// Tantive IV
+		9995,	// Imperial Raider
+	],
+	gbp: [
+		699,	// dice, bases
+		1199,	// small-based ship
+		1699,	// small-based ship+
+		2499,	// large-based ship
+		2999,	// large-based ship+
+		3999,	// Ghost
+		4999,	// Rebel Transport
+		6499,	// Imperial Assault Carrier
+		6999,	// -
+		7499,	// Tantive IV
+		7999,	// Imperial Raider
+	]
+};
 
 swx = [
 	{"null": []},
