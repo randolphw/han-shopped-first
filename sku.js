@@ -184,7 +184,8 @@ swx = [
 		{name: "HWK-290", type: "ship", qty: 1},
 		{name: "Jan Ors", type: "pilot", qty: 1},
 		{name: "Kyle Katarn", type: "pilot", qty: 1},
-		{name: "Roark Garnet", type: "pilot", qty: 1},
+		{name: "Roark Garnet", type: "pilot", qty: 1
+},
 		{name: "Rebel Operative", type: "pilot", qty: 1},
 		{name: "Intelligence Agent", type: "crew", qty: 1},
 		{name: "Recon Specialist", type: "crew", qty: 1},
@@ -556,8 +557,29 @@ swx = [
 		{name: "Proton Torpedoes", type: "torpedo", qty: 1}
 	],
 	cost: 4},
-	{"T-70 X-wing Expansion Pack": [], cost: 1},
-	{"TIE/fo Fighter Expansion Pack": [], cost: 1},
+	{"T-70 X-wing Expansion Pack": [
+		{name: "T-70 X-Wing", type: "ship", qty: 1},
+		{name: 'Ello Asty', type: "pilot", qty: 1},
+		{name: '"Red Ace"', type: "pilot", qty: 1},
+		{name: 'Red Squadron Veteran', type: "pilot", qty: 1},
+		{name: 'Blue Squadron Novice', type: "pilot", qty: 1},
+		{name: "Cool Hand", type: "elite", qty: 1},
+		{name: "Targeting Astromech", type: "astromech", qty: 1},
+		{name: "Weapons Guidance", type: "tech", qty: 1},
+		{name: "Integrated Astromech", type: "modification", qty: 1},
+		{name: "Advanced Proton Torpedoes", type: "torpedo", qty: 1}
+	], cost: 1},
+	{"TIE/fo Fighter Expansion Pack": [
+		{name: "TIE/fo Fighter", type: "ship", qty: 1},
+		{name: '"Omega Leader"', type: "pilot", qty: 1},
+		{name: '"Zeta Leader"', type: "pilot", qty: 1},
+		{name: '"Epsilon Ace"', type: "pilot", qty: 1},
+		{name: "Omega Squadron Pilot", type: "pilot", qty: 1},
+		{name: "Zeta Squadron Pilot", type: "pilot", qty: 1},
+		{name: "Epsilon Squadron Pilot", type: "pilot", qty: 1},
+		{name: "Juke", type: "elite", qty: 1},
+		{name: "Comm Relay", type: "tech", qty: 1},
+	], cost: 1},
 	{"Ghost Expansion Pack": [], cost: 5},
 	{"Inquisitor's TIE Expansion Pack": [], cost: 1},
 	{"Mist Hunter Expansion Pack": [], cost: 2},
