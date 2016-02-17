@@ -14,6 +14,7 @@ var cachedBuild = [];
 var filteredItems = [];
 var currency = "usd";
 var symbol = {usd: "$", gbp: String.fromCharCode(163)}
+var builders = ["fab", "xws", "yasb"];
 
 function initialize() {
 	layer0 = document.getElementById("layer0");
@@ -23,6 +24,38 @@ function initialize() {
 	ctx = [layer0.getContext("2d"), layer1.getContext("2d")];
 	ctx[0].fillStyle = "rgba(28, 79, 82, 0.8)";
 	ctx[0].fillRect(0, 0, 800, 600);
+	if (location.search) {
+		var start = location.search.indexOf("b=");
+		var marker = location.search.indexOf("&l=");
+		var importBuilder = location.search.substring(3, marker);
+		var importList = location.search.substring(marker + 3);
+		if (builders.indexOf(importBuilder) > -1 && importList) {
+			directImport (importBuilder, importList);
+		};
+	};
+};
+
+function directImport (importBuilder, importList) {
+	switch (importBuilder) {
+		case "xws":
+			var url = "http://xwing-builder.co.uk/xws/" + importList + "?raw=1";
+			break;
+		case "yasb":
+			var url = "https://yasb-xws.herokuapp.com/" + importList;
+			break;
+		default:
+			var url = "";
+			break;
+	};
+	if (url != "") {
+		var req = new XMLHttpRequest();  
+		req.open('GET', url, false);   
+		req.send(null);
+		if(req.status == 200) {
+			document.getElementById("fieldImport").value = req.responseText;
+			importXWS();
+		};
+	};
 };
 
 function reset (z) {
