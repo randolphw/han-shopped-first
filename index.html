@@ -14,7 +14,7 @@ var cachedBuild = [];
 var filteredItems = [];
 var currency = "usd";
 var symbol = {usd: "$", gbp: String.fromCharCode(163)}
-var builders = ["fab", "xwsb", "xws", "yasb"];
+var builders = ["fab", "xwsb", "yasb"];
 
 function initialize() {
 	layer0 = document.getElementById("layer0");
@@ -38,7 +38,6 @@ function initialize() {
 function directImport (importBuilder, importList) {
 	switch (importBuilder) {
 		case "xwsb":
-		case "xws":
 			var url = "http://xwing-builder.co.uk/xws/" + importList + "?raw=1";
 			break;
 		case "yasb":
