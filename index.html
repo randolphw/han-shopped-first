@@ -92,13 +92,11 @@ function importXWS () {
 	var rawbuild = [];
 	for (entry in xws.pilots) {
 		var pilot = xws.pilots[entry];
-
 // builder XWS implementation error, temporary workaround
 		if (pilot.ship == "yt2400freighter") {
 			pilot.ship = "yt2400";
 		};
 // workaround
-
 		var pilotIndex = rawbuild.indexOf("pilot&" + pilot.name + "_" + pilot.ship);
 		if (pilotIndex == -1) {
 			rawbuild.push("pilot&" + pilot.name + "_" + pilot.ship);
@@ -268,16 +266,19 @@ function sourceParts (build) {
 						var swxType = swxItem.type;
 						var swxVariant = swxItem.variant;
 						var swxShip = swxItem.ship;
-
 						var canonicalBuildName = canonicalize(build[i].name);
 						var buildType = build[i].type;
 						var buildVariant = build[i].variant;
 						var buildShip = build[i].ship;
-
 						if (canonicalSwxName == canonicalBuildName && swxType == buildType && 
 							(swxVariant == undefined || (swxVariant == buildVariant)) && 
 							(swxShip == undefined || canonicalize(swxShip) == buildShip)) {
 							build[i].name = swxItem.name;
+// workaround to handle YASB multi-ship pilots until XWS spec is defined
+							if (build[i].name.indexOf("-SWX") != -1) {
+								build[i].name = build[i].name.substr(0, build[i].name.indexOf("-SWX"));
+							};
+//
 							build[i].sources[build[i].sources.length] = ["SWX" + j, swxItem.qty];
 							if (swxItem.variant == undefined) {
 								delete build[i].variant;
