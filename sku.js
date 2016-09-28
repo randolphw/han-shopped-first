@@ -739,10 +739,10 @@ swx = [
 		{name: "IG-88D", type: "crew", qty: 1},
 		{name: "Veteran Instincts", type: "elite", qty: 1},
 		{name: "Rigged Cargo Chute", type: "illicit", qty: 1},
-		{name: "Black Market Slicer Tools", type: "illicit", qty: 1},
+		{name: "Black Market Slicer Tools", type: "illicit", qty: 2},
 		{name: "Shadow Caster", type: "title", qty: 1},
 		{name: "Countermeasures", type: "modification", qty: 1},
-		{name: "Tactical Jammer", type: "modification", qty: 1},
+		{name: "Tactical Jammer", type: "modification", qty: 2},
 		{name: "Gyroscopic Targeting", type: "modification", qty: 1}
 	], cost: 4},
 	{"Heroes of the Resistance Expansion Pack": [], cost: 4},
