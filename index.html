@@ -274,11 +274,9 @@ function sourceParts (build) {
 							(swxVariant == undefined || (swxVariant == buildVariant)) && 
 							(swxShip == undefined || canonicalize(swxShip) == buildShip)) {
 							build[i].name = swxItem.name;
-// workaround to handle YASB multi-ship pilots until XWS spec is defined
 							if (build[i].name.indexOf("-SWX") != -1) {
 								build[i].name = build[i].name.substr(0, build[i].name.indexOf("-SWX"));
 							};
-//
 							build[i].sources[build[i].sources.length] = ["SWX" + j, swxItem.qty];
 							if (swxItem.variant == undefined) {
 								delete build[i].variant;
