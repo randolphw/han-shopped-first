@@ -92,18 +92,20 @@ function importXWS () {
 	var rawbuild = [];
 	for (entry in xws.pilots) {
 		var pilot = xws.pilots[entry];
-		var pilotIndex = rawbuild.indexOf("pilot&" + pilot.name);
-		if (pilotIndex == -1) {
-			rawbuild.push("pilot&" + pilot.name);
-			rawbuild.push(1);
-		} else {
-			rawbuild[pilotIndex + 1]++;
-		};
+
 // builder XWS implementation error, temporary workaround
 		if (pilot.ship == "yt2400freighter") {
 			pilot.ship = "yt2400";
 		};
 // workaround
+
+		var pilotIndex = rawbuild.indexOf("pilot&" + pilot.name + "_" + pilot.ship);
+		if (pilotIndex == -1) {
+			rawbuild.push("pilot&" + pilot.name + "_" + pilot.ship);
+			rawbuild.push(1);
+		} else {
+			rawbuild[pilotIndex + 1]++;
+		};
 		var shipIndex = rawbuild.indexOf("ship&" + pilot.ship);
 		if (shipIndex == -1) {
 			rawbuild.push("ship&" + pilot.ship);
@@ -156,7 +158,9 @@ function importXWS () {
 		var cardName = card.substr(card.indexOf("&") + 1);
 		switch (cardType) {
 			case "pilot":
-				build.push({name: cardName, variant: faction, type: cardType, qty: cardQTY});
+				var pilotName = cardName.substring(0, cardName.indexOf("_"));
+				var shipName = cardName.substr(cardName.indexOf("_") + 1);
+				build.push({name: pilotName, ship: shipName, variant: faction, type: cardType, qty: cardQTY});
 				break;
 			default:
 				build.push({name: cardName, type: cardType, qty: cardQTY});
@@ -259,10 +263,23 @@ function sourceParts (build) {
 			for (key in swx[j]) {
 				if (key != "cost") {
 					for (var k = 0; k < swx[j][key].length; k++) {
-						if (canonicalize(swx[j][key][k].name) == canonicalize(build[i].name) && swx[j][key][k].type == build[i].type && (swx[j][key][k].variant == undefined || (swx[j][key][k].variant == build[i].variant))) {
-							build[i].name = swx[j][key][k].name;
-							build[i].sources[build[i].sources.length] = ["SWX" + j, swx[j][key][k].qty];
-							if (swx[j][key][k].variant == undefined) {
+						var swxItem = swx[j][key][k];
+						var canonicalSwxName = canonicalize(swxItem.name);
+						var swxType = swxItem.type;
+						var swxVariant = swxItem.variant;
+						var swxShip = swxItem.ship;
+
+						var canonicalBuildName = canonicalize(build[i].name);
+						var buildType = build[i].type;
+						var buildVariant = build[i].variant;
+						var buildShip = build[i].ship;
+
+						if (canonicalSwxName == canonicalBuildName && swxType == buildType && 
+							(swxVariant == undefined || (swxVariant == buildVariant)) && 
+							(swxShip == undefined || canonicalize(swxShip) == buildShip)) {
+							build[i].name = swxItem.name;
+							build[i].sources[build[i].sources.length] = ["SWX" + j, swxItem.qty];
+							if (swxItem.variant == undefined) {
 								delete build[i].variant;
 							};
 						};
