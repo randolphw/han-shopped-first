@@ -683,7 +683,7 @@ swx = [
 		{name: "Gamma Squadron Veteran", type: "pilot", qty: 2},
 		{name: "Crack Shot", type: "elite", qty: 1},
 		{name: "Dorsal Turret", type: "turret", qty: 2},
-		{name: "Proximity Miness", type: "bomb", qty: 1},
+		{name: "Proximity Mines", type: "bomb", qty: 1},
 		{name: "Cluster Mines", type: "bomb", qty: 1},
 		{name: "Tractor Beam", type: "cannon", qty: 1},
 		{name: "Systems Officer", type: "crew", qty: 1},
