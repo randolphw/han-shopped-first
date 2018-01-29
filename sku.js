@@ -5,6 +5,7 @@ costTier = {
 		1995,	// small-based ship+
 		2995,	// large-based ship
 		3995,	// large-based ship+
+		4499,   // Resistance Bomber
 		4995,	// Ghost
 		5995,	// Rebel Transport
 		6995,	// Imperial Assault Carrier
@@ -18,6 +19,7 @@ costTier = {
 		1699,	// small-based ship+
 		2499,	// large-based ship
 		2999,	// large-based ship+
+		3699,   // Resistance Bomber
 		3999,	// Ghost
 		4999,	// Rebel Transport
 		6499,	// Imperial Assault Carrier
@@ -179,7 +181,7 @@ swx = [
 		{name: "R5-P9", type: "astromech", qty: 1},
 		{name: "Flechette Torpedoes", type: "torpedo", qty: 3}
 	],
-	cost: 6},
+	cost: 7},
 	{"HWK-290 Expansion Pack": [
 		{name: "HWK-290", type: "ship", qty: 1},
 		{name: "Jan Ors", type: "pilot", qty: 1},
@@ -315,7 +317,7 @@ swx = [
 		{name: "R2-D2", type: "crew", qty: 1},
 		{name: "Targeting Coordinator", type: "crew", qty: 1}
 	],
-	cost: 9},
+	cost: 10},
 	{"YT-2400 Freighter Expansion Pack": [
 		{name: "YT-2400", type: "ship", qty: 1},
 		{name: '"Leebo"', type: "pilot", qty: 1},
@@ -469,7 +471,7 @@ swx = [
 		{name: "Advanced Targeting Computer", type: "system", qty: 4},
 		{name: "TIE/x1", type: "title", qty: 4}
 	],
-	cost: 10},
+	cost: 11},
 	{"Hound's Tooth Expansion Pack": [
 		{name: "YV-666", type: "ship", qty: 1},
 		{name: "Bossk", type: "pilot", qty: 1},
@@ -549,7 +551,7 @@ swx = [
 		{name: "Expose", type: "elite", qty: 1},
 		{name: "Marksmanship", type: "elite", qty: 1}
 	],
-	cost: 7},
+	cost: 8},
 	{"The Force Awakens Core Set": [
 		{name: "T-70 X-Wing", type: "ship", qty: 1},
 		{name: "TIE/fo Fighter", type: "ship", qty: 2},
@@ -604,7 +606,7 @@ swx = [
 		{name: "Attack Shuttle", type: "ship", qty: 1},
 		{name: "Hera Syndulla", type: "pilot", qty: 1, ship: "Attack Shuttle"},
 		{name: "Sabine Wren", type: "pilot", qty: 1, ship: "Attack Shuttle"},
-		{name: "Ezra Bridger", type: "pilot", qty: 1},
+		{name: "Ezra Bridger", type: "pilot", qty: 1, ship: "Attack Shuttle"},
 		{name: '"Zeb" Orrelios', type: "pilot", qty: 1, ship: "Attack Shuttle"},
 		{name: "Predator", type: "elite", qty: 1},
 		{name: "Adv. Proton Torpedoes", type: "torpedo", qty: 1},
@@ -620,7 +622,7 @@ swx = [
 		{name: '"Zeb" Orrelios', type: "crew", qty: 1},
 		{name: "Reinforced Deflectors", type: "system", qty: 1}
 	],
-	 cost: 5},
+	 cost: 6},
 	{"Inquisitor's TIE Expansion Pack": [
 		{name: "Tie Advanced Prototype", type: "ship", qty: 1},
 		{name: "Valen Rudor", type: "pilot", qty: 1},
@@ -719,7 +721,7 @@ swx = [
 	], cost: 1},
 	{"Protectorate Starfighter Expansion Pack": [
 		{name: "Protectorate Starfighter", type: "ship", qty: 1},
-		{name: "Fenn Rau", type: "pilot", qty: 1},
+		{name: "Fenn Rau", type: "pilot", qty: 1, ship: "Protectorate Starfighter"},
 		{name: "Old Teroch", type: "pilot", qty: 1},
 		{name: "Kad Solus", type: "pilot", qty: 1},
 		{name: "Concord Dawn Ace", type: "pilot", qty: 1},
@@ -772,7 +774,21 @@ swx = [
 		{name: "Black One", type: "title", qty: 1},
 		{name: "Millennium Falcon-SWX57", type: "title", qty: 1}
 	], cost: 4},
-	{"C-ROC Cruiser Expansion Pack Expansion Pack": [], cost: 7},
+	{"C-ROC Cruiser Expansion Pack Expansion Pack": [
+		{name: "M3-A Interceptor", type: "ship", qty: 1},
+		{name: "Genesis Red", type: "pilot", qty: 1},
+		{name: "Quinn Jast", type: "pilot", qty: 1},
+		{name: "Inaldra", type: "pilot", qty: 1},
+		{name: "Sunny Bounder", type: "pilot", qty: 1},
+		{name: "Tansarii Point Veteran", type: "pilot", qty: 1},
+		{name: "Cartel Spacer", type: "pilot", qty: 1},
+		{name: "Cikatro Vizago", type: "crew", qty: 1},
+		{name: "Jabba the Hutt", type: "crew", qty: 1},
+		{name: '"Light Scyk" Interceptor', type: "title", qty: 6},
+		{name: '"Heavy Scyk" Interceptor', type: "title", qty: 1},
+		{name: "Arc Caster", type: "cannon", qty: 5},
+		{name: "Pulsed Ray Shield", type: "modification", qty: 5}
+	], cost: 8},
 	{"Sabine's TIE Fighter Expansion Pack": [
 		{name: "TIE Fighter", type: "ship", qty: 1},
 		{name: "Ahsoka Tano", type: "pilot", qty: 1},
@@ -787,7 +803,7 @@ swx = [
 	], cost: 1},
 	{"Upsilon-class Shuttle Expansion Pack": [
 		{name: "Upsilon-class Shuttle", type: "ship", qty: 1},
-		{name: "Kylo Ren", type: "pilot", qty: 1},
+		{name: "Kylo Ren", type: "pilot", qty: 1, ship: "Upsilon-class Shuttle"},
 		{name: "Lieutenant Dormitz", type: "pilot", qty: 1},
 		{name: "Major Stridan", type: "pilot", qty: 1},
 		{name: "Starkiller Base Pilot", type: "pilot", qty: 1},
@@ -844,8 +860,135 @@ swx = [
 		{name: "Adaptive Ailerons", type: "title", qty: 1},
 		{name: "Lightweight Frame", type: "modification", qty: 1}
 	], cost: 1},
-	{"Auzituck Gunship Expansion Pack": [], cost: 1},
-	{"Scurrg H-6 Bomber Expansion Pack": [], cost: 2},
-	{"TIE Aggressor Expansion Pack": [], cost: 1}
-// TIE Aggressor = swx66
+	{"Auzituck Gunship Expansion Pack": [
+		{name: "Auzituck Gunship", type: "ship", qty: 1},
+		{name: "Wullffwarro", type: "pilot", qty: 1},
+		{name: "Lowhhrick", type: "pilot", qty: 1},
+		{name: "Wookiee Liberator", type: "pilot", qty: 1},
+		{name: "Kashyyyk Defender", type: "pilot", qty: 1},
+		{name: "Selflessness", type: "elite", qty: 1},
+		{name: "Intimidation", type: "elite", qty: 1},
+		{name: "Tactician", type: "crew", qty: 1},
+		{name: "Wookiee Commandos", type: "crew", qty: 1},
+		{name: "Breach Specialist", type: "crew", qty: 1},
+		{name: "Hull Upgrade", type: "modification", qty: 1}	
+	], cost: 1},
+	{"Scurrg H-6 Bomber Expansion Pack": [
+		{name: "Scurrg H-6 Bomber", type: "ship", qty: 1},
+		{name: "Captain Nym", type: "pilot", qty: 1},
+		{name: "Captain Nym (Rebel)", type: "pilot", qty: 1},
+		{name: "Sol Sixxa", type: "pilot", qty: 1},
+		{name: "Lok Revenant", type: "pilot", qty: 1},
+		{name: "Karthakk Pirate", type: "pilot", qty: 1},
+		{name: "Lightning Reflexes", type: "elite", qty: 1},
+		{name: "Seismic Torpedo", type: "torpedo", qty: 1},
+		{name: "Cruise Missiles", type: "missile", qty: 1},
+		{name: "Bomblet Generator", type: "bomb", qty: 1},
+		{name: "Minefield Mapper", type: "system", qty: 1},
+		{name: "Synced Turret", type: "turret", qty: 1},
+		{name: "Cad Bane", type: "crew", qty: 1},
+		{name: "R4-E1", type: "salvaged", qty: 1},
+		{name: "Havoc", type: "title", qty: 1}
+	], cost: 2},
+	{"TIE Aggressor Expansion Pack": [
+		{name: "TIE Aggressor", type: "ship", qty: 1},
+		{name: "Lieutenant Kestal", type: "pilot", qty: 1},
+		{name: "Onyx Squadron Escort", type: "pilot", qty: 1},
+		{name: '"Double Edge"', type: "pilot", qty: 1},
+		{name: "Sienar Specialist", type: "pilot", qty: 1},
+		{name: "Intensity", type: "elite", qty: 1},
+		{name: "Twin Laser Turret", type: "turret", qty: 1},
+		{name: "Synced Turret", type: "turret", qty: 1},
+		{name: "Unguided Rockets", type: "missile", qty: 1},
+		{name: "Lightweight Frame", type: "modification", qty: 1}
+	], cost: 1},
+	{"Alpha-class Star Wing Expansion Pack": [
+		{name: "Alpha-class Star Wing", type: "ship", qty: 1},
+		{name: "Major Vynder", type: "pilot", qty: 1},
+		{name: "Lieutenant Karsabi", type: "pilot", qty: 1},
+		{name: "Rho Squadron Veteran", type: "pilot", qty: 1},
+		{name: "Nu Squadron Pilot", type: "pilot", qty: 1},
+		{name: "Saturation Salvo", type: "elite", qty: 1},
+		{name: "Linked Battery", type: "cannon", qty: 1},
+		{name: "Jamming Beam", type: "cannon", qty: 1},
+		{name: "Cruise Missiles", type: "missile", qty: 1},
+		{name: "XG-1 Assault Configuration", type: "title", qty: 1},
+		{name: "OS-1 Arsenal Loadout", type: "title", qty: 1},
+		{name: "Advanced SLAM", type: "modification", qty: 1}
+	], cost: 1},
+	{"M12-L Kimogila Fighter Expansion Pack": [
+		{name: "M12-L Kimogila Fighter", type: "ship", qty: 1},
+		{name: "Torani Kulda", type: "pilot", qty: 1},
+		{name: "Dalan Oberos", type: "pilot", qty: 1, ship: "M12-L Kimogila Fighter"},
+		{name: "Cartel Executioner", type: "pilot", qty: 1},
+		{name: "Cartel Brute", type: "pilot", qty: 1},
+		{name: "Saturation Salvo", type: "elite", qty: 2},
+		{name: "Plasma Torpedoes", type: "torpedo", qty: 1},
+		{name: "Scrambler Missiles", type: "missile", qty: 2},
+		{name: "R5-TK", type: "salvaged", qty: 1},
+		{name: "Enforcer", type: "title", qty: 1},
+		{name: "Dead Man's Switch", type: "illicit", qty: 1},
+		{name: "Contraband Cybernetics", type: "illicit", qty: 2},
+	], cost: 2},
+	{"Phantom II Expansion Pack": [
+		{name: "Sheathipede-class Shuttle", type: "ship", qty: 1},
+		{name: "Fenn Rau", type: "pilot", qty: 1, ship: "Sheathipede-class Shuttle"},
+		{name: "Ezra Bridger", type: "pilot", qty: 1, ship: "Sheathipede-class Shuttle"},
+		{name: '"Zeb" Orrelios', type: "pilot", qty: 1, ship: "Sheathipede-class Shuttle"},
+		{name: "AP-5", type: "pilot", qty: 1},
+		{name: "Maul", type: "crew", qty: 1},
+		{name: "Courier Droid", type: "crew", qty: 1},
+		{name: '"Chopper"', type: "astromech", qty: 1},
+		{name: "Flight-Assist Astromech", type: "astromech", qty: 1},
+		{name: "Ghost", type: "title", qty: 1},
+		{name: "Phantom II", type: "title", qty: 1}
+	], cost: 1},
+	{"TIE Silencer Expansion Pack": [
+		{name: "TIE Silencer", type: "ship", qty: 1},
+		{name: "Kylo Ren", type: "pilot", qty: 1, ship: "TIE Silencer"},
+		{name: 'Test Pilot "Blackout"', type: "pilot", qty: 1},
+		{name: "First Order Test Pilot", type: "pilot", qty: 1},
+		{name: "Sienar-Jaemus Analyst", type: "pilot", qty: 1},
+		{name: "Debris Gambit", type: "elite", qty: 2},
+		{name: "Sensor Jammer", type: "system", qty: 1},
+		{name: "Primed Thrusters", type: "tech", qty: 2},
+		{name: "Advanced Optics", type: "tech", qty: 2},
+		{name: "Threat Tracker", type: "tech", qty: 2},
+		{name: "Autothrusters", type: "modification", qty: 1},
+		{name: "First Order Vanguard", type: "title", qty: 1}
+	], cost: 4},
+	{"Resistance Bomber Expansion Pack": [
+		{name: "B/SF-17 Bomber", type: "ship", qty: 1},
+		{name: "Crimson Leader", type: "pilot", qty: 1},
+		{name: "Cobalt Leader", type: "pilot", qty: 1},
+		{name: "Crimson Specialist", type: "pilot", qty: 1},
+		{name: "Crimson Squadron Pilot", type: "pilot", qty: 1},
+		{name: "Conner Net", type: "bomb", qty: 2},
+		{name: "Ordnance Silos", type: "bomb", qty: 1},
+		{name: "Seismic Charges", type: "bomb", qty: 1},
+		{name: "Thermal Detonators", type: "bomb", qty: 1},
+		{name: "Trajectory Simulator", type: "system", qty: 3},
+		{name: "Targeting Synchronizer", type: "tech", qty: 1},
+		{name: "Advanced Optics", type: "tech", qty: 2},
+		{name: "Crossfire Formation", type: "title", qty: 1},
+		{name: "Deflective Plating", type: "modification", qty: 1}
+	], cost: 5},
+	{"Guns for Hire Expansion Pack": [
+		{name: "Kihraxz Fighter", type: "ship", qty: 1},
+		{name: "StarViper", type: "ship", qty: 1},
+		{name: "Viktor Hel", type: "pilot", qty: 1},
+		{name: "Captain Jostero", type: "pilot", qty: 1},
+		{name: "Black Sun Ace", type: "pilot", qty: 1},
+		{name: "Cartel Marauder", type: "pilot", qty: 1},
+		{name: "Dalan Oberos", type: "pilot", qty: 1, ship: "StarViper"},
+		{name: "Thweek", type: "pilot", qty: 1},
+		{name: "Black Sun Assassin", type: "pilot", qty: 2},
+		{name: "Harpoon Missiles", type: "missile", qty: 2},
+		{name: "Ion Discharger", type: "illicit", qty: 2},
+		{name: "StarViper Mk. II", type: "title", qty: 2},
+		{name: "Vaksai", type: "title", qty: 2},
+		{name: "Pulsed Ray Shield", type: "modification", qty: 2},
+		{name: "Stealth Device", type: "modification", qty: 1},
+		{name: "Vectored Thrusters", type: "modification", qty: 1}
+	], cost: 1}
 ];
